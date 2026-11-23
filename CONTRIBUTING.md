@@ -55,11 +55,24 @@ DrowsyJudge.evaluate(ctx, prone) -> bool                                # 송유
 
 ## 작업 방식
 
-- 브랜치: `feature/{이슈번호}-{내용}` (예: `feature/3-drowsy-perclos`), `develop`에서 따고 `develop`으로 PR
-- 커밋: `feat:`, `fix:`, `chore:`, `test:`, `docs:` + 한글 설명 + `(#이슈번호)`
-- PR 전에 `pytest` 전체 통과
+백엔드 레포와 같은 규칙을 쓴다.
+
+**브랜치**
+- `main`: 배포용. `develop`에서만 머지한다.
+- `develop`: 개발 통합 브랜치. **기본 브랜치**로 둔다.
+- `feature/{이슈번호}-{내용}`: 작업 브랜치 (예: `feature/3-drowsy-yawn`). `develop`에서 따고 `develop`으로 PR. `#`은 쓰지 않는다.
+
+**순서**
+1. 이슈 작성 (템플릿: Feature / Bug / Chore)
+2. `git switch develop` → `git pull origin develop` → `git switch -c feature/{번호}-{내용}`
+3. 커밋: `feat:`, `fix:`, `chore:`, `test:`, `docs:` + 한글 설명 + `(#이슈번호)`
+4. `pytest` 전체 통과 확인 후 push, PR (템플릿 작성, `Resolves: #번호`)
+5. 리뷰 후 **Create a merge commit**으로 머지, 브랜치 삭제
+
+**리뷰**
+- 자기 담당 파일만 바꾼 PR: 상대방 확인 후 머지 (승인 1명)
+- 공통 파일이나 메시지·특징값 형식을 바꾼 PR: **상대방 승인 필수**
 - 기준값만 바꾸는 PR도 이유(어떤 데이터로 봤는지)를 적는다
-- 공통 파일을 바꾸는 PR은 상대방 리뷰 필수
 
 ## 데이터 수집
 
