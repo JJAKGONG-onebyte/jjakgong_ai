@@ -1,19 +1,10 @@
 # 담당 파일을 고치는 PR에 담당자가 자동으로 리뷰어로 지정된다.
 
-#
-
-# /app/detection/away_gaze.py @jadeseeu
-
-# /tests/test_away_gaze.py @jadeseeu
-
-# /app/detection/drowsy.py @yooooojin
-
-# /tests/test_drowsy.py @yooooojin
-
-# /app/detection/base.py @yooooojin @jadeseeu
-
-# /app/detection/detector.py @yooooojin @jadeseeu
-
-# /app/detection/thresholds.py @yooooojin @jadeseeu
-
-# /app/detection/calibration.py @jadeseeu
+/app/detection/away_gaze.py @jadeseeu
+/tests/test_away_gaze.py @jadeseeu
+/app/detection/drowsy.py @yoooooojin
+/tests/test_drowsy.py @yoooooojin
+/app/detection/base.py @yoooooojin @jadeseeu
+/app/detection/detector.py @yoooooojin @jadeseeu
+/app/detection/thresholds.py @yoooooojin @jadeseeu
+/app/detection/calibration.py @jadeseeu
