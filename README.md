@@ -5,6 +5,7 @@
 
 - 명세: 노션 `집중 감지 WebSocket (브라우저 ↔ AI 서버)`, `집중 이벤트 기록 (내부 API)`
 - 현재 판정: **규칙 기반 v0.1** (`modelVersion`: `away-gaze-rule-v0.1`, `drowsy-rule-v0.1`). 모델 A·B는 데이터를 모은 뒤 교체한다.
+- 협업 규칙(담당 파일, 브랜치, 커밋, PR, 리뷰)은 [CONTRIBUTING.md](CONTRIBUTING.md) 참고
 
 ```
 브라우저 ──features(초당 5회)──▶ AI 서버 ──reaction / reaction.clear──▶ 브라우저
@@ -29,13 +30,13 @@ $env:FEATURE_LOG_DIR="data/raw"
 uvicorn app.main:app --reload --port 8000
 ```
 
-| 환경변수 | 설명 |
-|---|---|
-| `FOCUS_STREAM_SECRET` | focusStream 토큰 서명 키. **메인 서버와 같은 값**, 32바이트 이상 |
-| `INTERNAL_API_KEY` | 메인 서버 내부 API 키. **메인 서버와 같은 값** |
-| `MAIN_SERVER_URL` | 메인 서버 주소 |
-| `TIME_SOURCE` | `server`: AI 서버 수신 시각 기준(운영) / `client`: 브라우저 timestamp 기준(시뮬레이터) |
-| `FEATURE_LOG_DIR` | 특징값 로그 폴더. 비우면 저장 안 함 |
+| 환경변수              | 설명                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `FOCUS_STREAM_SECRET` | focusStream 토큰 서명 키. **메인 서버와 같은 값**, 32바이트 이상                       |
+| `INTERNAL_API_KEY`    | 메인 서버 내부 API 키. **메인 서버와 같은 값**                                         |
+| `MAIN_SERVER_URL`     | 메인 서버 주소                                                                         |
+| `TIME_SOURCE`         | `server`: AI 서버 수신 시각 기준(운영) / `client`: 브라우저 timestamp 기준(시뮬레이터) |
+| `FEATURE_LOG_DIR`     | 특징값 로그 폴더. 비우면 저장 안 함                                                    |
 
 ## 테스트
 
@@ -53,21 +54,22 @@ Spring과 붙여 볼 때는 트래킹 ON으로 학습을 시작하고 1~2분 지
 
 판정은 담당자별 파일로 나뉘어 있다. 담당과 협업 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md) 참고.
 
-| 상태 | 파일 (담당) | 규칙 |
-|---|---|---|
-| `AWAY` | `away_gaze.py` (성유민) | 얼굴 미검출 30초 이상. 고개가 숙여지다 사라지면 엎드림으로 보고 제외 |
-| `GAZE_OFF` | `away_gaze.py` (성유민) | 화면·자료 기준 대비 고개 좌우 25°, 위 20°, 자료보다 아래 20° 초과 또는 홍채 \|x\| > 0.8 이 지속 |
-| `DROWSY` | `drowsy.py` (송유진) | 최근 10초 눈 감김 비율(PERCLOS)이 강도 기준 이상으로 지속. 눈 기준값은 화면/자료 자세 중 가까운 쪽 |
-| 엎드림 | 판단: `away_gaze.py` / 처리: `drowsy.py` | LOW: 반응 안 함 / NORMAL: 엎드리기 직전 PERCLOS ≥ 0.5일 때만 졸음 / HIGH: 졸음 |
-| `UNKNOWN` | `session.py` | 기준값이 없거나 휴식 중이면 판정하지 않음 |
+| 상태       | 파일 (담당)                              | 규칙                                                                                               |
+| ---------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `AWAY`     | `away_gaze.py` (성유민)                  | 얼굴 미검출 30초 이상. 고개가 숙여지다 사라지면 엎드림으로 보고 제외                               |
+| `GAZE_OFF` | `away_gaze.py` (성유민)                  | 화면·자료 기준 대비 고개 좌우 25°, 위 20°, 자료보다 아래 20° 초과 또는 홍채 \|x\| > 0.8 이 지속    |
+| `DROWSY`   | `drowsy.py` (송유진)                     | 최근 10초 눈 감김 비율(PERCLOS)이 강도 기준 이상으로 지속. 눈 기준값은 화면/자료 자세 중 가까운 쪽 |
+| 엎드림     | 판단: `away_gaze.py` / 처리: `drowsy.py` | LOW: 반응 안 함 / NORMAL: 엎드리기 직전 PERCLOS ≥ 0.5일 때만 졸음 / HIGH: 졸음                     |
+| `UNKNOWN`  | `session.py`                             | 기준값이 없거나 휴식 중이면 판정하지 않음                                                          |
 
-| 강도 | 점수 기준 | 지속 시간 |
-|---|---|---|
-| LOW | 0.9 | 60초 |
-| NORMAL | 0.8 | 30초 |
-| HIGH | 0.7 | 15초 |
+| 강도   | 점수 기준 | 지속 시간 |
+| ------ | --------- | --------- |
+| LOW    | 0.9       | 60초      |
+| NORMAL | 0.8       | 30초      |
+| HIGH   | 0.7       | 15초      |
 
 공통 처리 (`detector.py`)
+
 - 우선순위 AWAY > DROWSY > GAZE_OFF, 반응은 한 번에 하나.
 - 반응 중 조건이 2초 이상 풀리면 복귀(`reaction.clear` RECOVERED)로 보고 이벤트를 기록한다.
 - 버튼으로 닫은 반응은 같은 종류를 지속 시간만큼 다시 띄우지 않는다.
@@ -92,20 +94,20 @@ Spring과 붙여 볼 때는 트래킹 ON으로 학습을 시작하고 1~2분 지
 
 **focusStream 토큰** (메인 서버가 학습 시작·트래킹 ON 응답에서 발급)
 
-| 항목 | 값 |
-|---|---|
-| 알고리즘 / 키 | HS256 / `FOCUS_STREAM_SECRET` |
-| 클레임 | `type: "FOCUS_STREAM"`, `sessionId`, `userId`, `focusSensitivity`, `exp` |
-| 접속 | `ws://{AI 서버}/ws/focus?token=...` |
-| 오류 | 토큰 없음·만료·서명 오류·type 불일치 → 종료 코드 4001 |
+| 항목          | 값                                                                       |
+| ------------- | ------------------------------------------------------------------------ |
+| 알고리즘 / 키 | HS256 / `FOCUS_STREAM_SECRET`                                            |
+| 클레임        | `type: "FOCUS_STREAM"`, `sessionId`, `userId`, `focusSensitivity`, `exp` |
+| 접속          | `ws://{AI 서버}/ws/focus?token=...`                                      |
+| 오류          | 토큰 없음·만료·서명 오류·type 불일치 → 종료 코드 4001                    |
 
 **AI 서버가 부르는 내부 API** (헤더 `X-Internal-Api-Key`)
 
-| API | 용도 | 상태 |
-|---|---|---|
-| `POST /internal/study-sessions/{id}/focus-events` | 이벤트 기록 | 메인 서버 구현 완료 |
-| `GET /internal/study-sessions/{id}/calibration` | 기준값 조회 (없으면 캘리브레이션 요청) | 미구현 → 실패 시 캘리브레이션 진행 |
-| `POST /internal/study-sessions/{id}/calibration` | 기준값 저장 | 미구현 → 실패해도 감지는 계속 |
+| API                                               | 용도                                   | 상태                               |
+| ------------------------------------------------- | -------------------------------------- | ---------------------------------- |
+| `POST /internal/study-sessions/{id}/focus-events` | 이벤트 기록                            | 메인 서버 구현 완료                |
+| `GET /internal/study-sessions/{id}/calibration`   | 기준값 조회 (없으면 캘리브레이션 요청) | 미구현 → 실패 시 캘리브레이션 진행 |
+| `POST /internal/study-sessions/{id}/calibration`  | 기준값 저장                            | 미구현 → 실패해도 감지는 계속      |
 
 ## 구조
 
