@@ -122,7 +122,7 @@ app/
     detector.py          판정 조립: 지속 시간·우선순위·쿨다운·featureSample    공통
     base.py              판정기 사이 형식 (FrameContext 등)                    공통
     thresholds.py        공통 기준값 (단속 강도 등)                            공통
-    calibration.py       기준값 계산                                           공통
+    calibration.py       기준값 계산                                           성유민
 tools/simulator.py       브라우저 없이 시험하는 가짜 클라이언트                송유진
 tests/                   test_away_gaze(성유민) / test_drowsy(송유진) / 나머지 공통
 ```

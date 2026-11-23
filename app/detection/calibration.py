@@ -1,4 +1,4 @@
-"""캘리브레이션 기준값 계산.
+"""캘리브레이션 기준값 계산 (담당: 성유민 / View 형식을 바꿀 때는 합의).
 
 브라우저가 단계(SCREEN/MATERIAL)마다 calibration.sample을 보내고
 calibration.complete로 끝을 알리면 평균값을 기준값으로 쓴다.

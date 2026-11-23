@@ -19,7 +19,7 @@ assignees: ""
 
 ## 🛠 구현 방향 (Technical Details)
 - **담당 파일:** (예: `app/detection/drowsy.py`)
-- **공통 파일 변경:** 없음 / 있음 (`base.py`, `detector.py`, `thresholds.py`, `calibration.py`)
+- **공통 파일 변경:** 없음 / 있음 (`base.py`, `detector.py`, `thresholds.py`)
 - **메시지·특징값 형식 변경:** 없음 / 있음 (브라우저·메인 서버와 맞춰야 함)
 
 ## 🔗 참고 자료 (References)

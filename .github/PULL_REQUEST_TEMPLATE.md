@@ -12,7 +12,7 @@
 - 없음
 
 ## 🤝 공통 파일 변경
-<!-- base.py, detector.py, thresholds.py, calibration.py, helpers.py를 바꿨다면 이유와 상대방 영향 -->
+<!-- base.py, detector.py, thresholds.py, helpers.py를 바꿨다면 이유와 상대방 영향 -->
 - 없음
 
 ## 🧪 Test

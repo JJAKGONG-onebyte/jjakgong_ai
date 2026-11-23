@@ -7,11 +7,22 @@ AI 서버는 두 사람이 같이 만든다. **각자 자기 파일만 고치고
 | 담당 | 파일 | 내용 |
 |---|---|---|
 | 성유민 | `app/detection/away_gaze.py`, `tests/test_away_gaze.py` | 얼굴/자리 이탈, 시선 이탈, 엎드림 판단 (모델 A) |
+| 성유민 | `app/detection/calibration.py` | 캘리브레이션 기준값 계산 (`View` 형식을 바꿀 때는 합의) |
 | 송유진 | `app/detection/drowsy.py`, `tests/test_drowsy.py` | 졸음 판정 (모델 B) |
 | 송유진 | `app/main.py`, `app/session.py`, `app/auth.py`, `app/main_server.py`, `app/feature_log.py`, `tools/` | WebSocket, 토큰, 메시지 처리, 이벤트 기록, 데이터 로그 |
-| **공통 (합의)** | `app/detection/base.py`, `detector.py`, `thresholds.py`, `calibration.py`, `tests/helpers.py`, `tests/test_detector.py` | 판정기 사이 형식, 지속 시간·우선순위·쿨다운, 공통 기준값, 캘리브레이션 |
+| **공통 (합의)** | `app/detection/base.py`, `detector.py`, `thresholds.py`, `tests/helpers.py`, `tests/test_detector.py` | 판정기 사이 형식, 지속 시간·우선순위·쿨다운, 공통 기준값 |
 
-캘리브레이션(`calibration.py`)은 유민님 담당 범위와 겹친다. 계산 방식은 유민님이 정하고, 메시지 처리(`session.py`)는 송유진이 맞춘다.
+캘리브레이션은 계산 방식(`calibration.py`)을 성유민이 정하고, 메시지 처리(`session.py`)는 송유진이 맞춘다.
+
+## 담당 미정 (정해지면 위 표로 옮긴다)
+
+| 항목 | 내용 | 메모 |
+|---|---|---|
+| 데이터 수집 | 누가, 언제, 어떤 상황(졸음·이탈·정상)을 몇 시간 모을지, 라벨 기준 | 모델 A·B 둘 다 필요 |
+| 학습 코드 공통부 | JSONL 로그 → 학습용 데이터 변환, 평가 지표 | 모델은 각자, 데이터 로더는 공통 |
+| 측정 불안정 판정 (`UNKNOWN`) | 조명·가림·얼굴 크기 등으로 값이 불안정할 때 판정 보류 | 얼굴 검출 품질이라 away_gaze 쪽과 가까움 |
+| 브라우저 연동 | MediaPipe 특징값 추출(성유민)과 WebSocket 연결·캐릭터 반응 표시(프론트)의 경계 | 프론트와 협의 |
+| 배포 | AI 서버 Docker 이미지, 서버 위치, 환경변수 관리 | 메인 서버 배포 담당과 협의 |
 
 ## 판정기 계약 (base.py)
 
@@ -34,12 +45,12 @@ DrowsyJudge.evaluate(ctx, prone) -> bool                                # 송유
 ```
 
 모델로 바꿀 때도 이 계약은 그대로 두고, 판정기 **안쪽**만 바꾼다.
-- 유민님: `AwayGazeJudge._gaze_off()` 등 규칙 → 모델 A 확률 ≥ `ctx.sensitivity.score_threshold`
+- 성유민: `AwayGazeJudge._gaze_off()` 등 규칙 → 모델 A 확률 ≥ `ctx.sensitivity.score_threshold`
 - 송유진: `DrowsyJudge.score()` → 모델 B 확률
 
 ## 특징값 정의 (브라우저 ↔ AI 서버, 반드시 일치)
 
-브라우저(MediaPipe) 계산은 유민님 담당이다. 아래 정의가 바뀌면 판정이 틀어지므로 바꿀 때 꼭 공유한다.
+브라우저(MediaPipe) 계산은 성유민 담당이다. 아래 정의가 바뀌면 판정이 틀어지므로 바꿀 때 꼭 공유한다.
 
 | 값 | 단위·범위 | 부호 |
 |---|---|---|
