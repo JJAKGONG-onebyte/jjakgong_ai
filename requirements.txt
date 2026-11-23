@@ -2,6 +2,7 @@ fastapi>=0.115
 uvicorn[standard]>=0.34
 httpx>=0.28
 PyJWT>=2.10
+tzdata>=2024.1
 
 # dev, test
 pytest>=8.3
