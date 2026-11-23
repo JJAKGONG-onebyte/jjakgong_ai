@@ -1,0 +1,11 @@
+# 담당 파일을 고치는 PR에 담당자가 자동으로 리뷰어로 지정된다.
+# 사용하려면 아래 주석을 풀고 실제 GitHub 아이디로 바꾼다.
+#
+# /app/detection/away_gaze.py   @유민님-GitHub-아이디
+# /tests/test_away_gaze.py      @유민님-GitHub-아이디
+# /app/detection/drowsy.py      @yooooojin
+# /tests/test_drowsy.py         @yooooojin
+# /app/detection/base.py        @yooooojin @유민님-GitHub-아이디
+# /app/detection/detector.py    @yooooojin @유민님-GitHub-아이디
+# /app/detection/thresholds.py  @yooooojin @유민님-GitHub-아이디
+# /app/detection/calibration.py @yooooojin @유민님-GitHub-아이디

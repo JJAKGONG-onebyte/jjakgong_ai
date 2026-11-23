@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.pytest_cache/
+.idea/
+.vscode/
+.DS_Store
+# 수집한 특징값 로그 (개인 학습 데이터라 저장소에 올리지 않음)
+data/
