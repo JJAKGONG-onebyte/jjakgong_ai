@@ -6,23 +6,27 @@ AI 서버는 두 사람이 같이 만든다. **각자 자기 파일만 고치고
 
 | 담당 | 파일 | 내용 |
 |---|---|---|
-| 성유민 | `app/detection/away_gaze.py`, `tests/test_away_gaze.py` | 얼굴/자리 이탈, 시선 이탈, 엎드림 판단 (모델 A) |
+| 성유민 | `app/detection/away_gaze.py`, `tests/test_away_gaze.py` | 얼굴/자리 이탈, 시선 이탈, 엎드림 판단 (모델 A), 측정 불안정(`UNKNOWN`) 판정 |
 | 성유민 | `app/detection/calibration.py` | 캘리브레이션 기준값 계산 (`View` 형식을 바꿀 때는 합의) |
 | 송유진 | `app/detection/drowsy.py`, `tests/test_drowsy.py` | 졸음 판정 (모델 B) |
 | 송유진 | `app/main.py`, `app/session.py`, `app/auth.py`, `app/main_server.py`, `app/feature_log.py`, `tools/` | WebSocket, 토큰, 메시지 처리, 이벤트 기록, 데이터 로그 |
+| 송유진 | 학습 코드 공통부 (추가 예정) | JSONL 로그 → 학습용 데이터 변환, 평가 지표. 모델 학습은 각자 |
+| 송유진 | 배포 파일 (추가 예정) | Dockerfile, 환경변수. 서버 위치는 메인 서버 배포 담당과 협의 |
 | **공통 (합의)** | `app/detection/base.py`, `detector.py`, `thresholds.py`, `tests/helpers.py`, `tests/test_detector.py` | 판정기 사이 형식, 지속 시간·우선순위·쿨다운, 공통 기준값 |
 
-캘리브레이션은 계산 방식(`calibration.py`)을 성유민이 정하고, 메시지 처리(`session.py`)는 송유진이 맞춘다.
+캘리브레이션은 계산 방식(`calibration.py`)을 성유민이 정하고, 메시지 처리(`session.py`)와 저장·조회 API는 송유진이 맞춘다.
 
-## 담당 미정 (정해지면 위 표로 옮긴다)
+## 이 레포 밖의 AI 관련 작업
 
-| 항목 | 내용 | 메모 |
+| 담당 | 작업 | 위치 |
 |---|---|---|
-| 데이터 수집 | 누가, 언제, 어떤 상황(졸음·이탈·정상)을 몇 시간 모을지, 라벨 기준 | 모델 A·B 둘 다 필요 |
-| 학습 코드 공통부 | JSONL 로그 → 학습용 데이터 변환, 평가 지표 | 모델은 각자, 데이터 로더는 공통 |
-| 측정 불안정 판정 (`UNKNOWN`) | 조명·가림·얼굴 크기 등으로 값이 불안정할 때 판정 보류 | 얼굴 검출 품질이라 away_gaze 쪽과 가까움 |
-| 브라우저 연동 | MediaPipe 특징값 추출(성유민)과 WebSocket 연결·캐릭터 반응 표시(프론트)의 경계 | 프론트와 협의 |
-| 배포 | AI 서버 Docker 이미지, 서버 위치, 환경변수 관리 | 메인 서버 배포 담당과 협의 |
+| 성유민 | MediaPipe 특징값 계산 + 캘리브레이션 안내 (프론트에서 쓰는 JS 모듈) | 프론트 레포 |
+| 성유민 | 데이터 수집 도구 (브라우저와 같은 계산 방식) | 프론트 레포 또는 이 레포 `tools/` |
+| 송유진 | 데이터 수집 계획·라벨 기준 | 노션 |
+| 송유진 | 캘리브레이션 기준값 저장·조회 내부 API (명세 9, 10번) | 백엔드 레포 |
+| 송유진 | `focusStream` 토큰 발급 | 백엔드 레포 |
+| 프론트 (학습화면 담당) | WebSocket 연결, 캐릭터 반응·버튼 표시 | 프론트 레포 |
+| 팀 전원 | 데이터 수집 참여 | - |
 
 ## 판정기 계약 (base.py)
 
